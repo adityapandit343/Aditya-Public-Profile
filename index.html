@@ -1,245 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aditya Dimri — Backend .NET Engineer</title>
-  <meta name="description" content="Aditya Dimri — Backend Software Engineer specializing in C#, .NET Core, ASP.NET Core, microservices and REST APIs." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#050505; color:#f2f3f5; font-family:'Inter',sans-serif; overflow-x:hidden; line-height:1.6; }
-    ::selection { background:#9457ff; color:#fff; }
-    .grid-bg { position:fixed; inset:0; z-index:0; pointer-events:none; background-image:linear-gradient(rgba(59,123,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,123,255,0.05) 1px, transparent 1px); background-size:48px 48px; mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%); }
-    .wrap { max-width:1200px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
-    :root { --bg:#050505; --bg-soft:#0a0b0e; --panel:rgba(255,255,255,0.04); --panel-border:rgba(255,255,255,0.08); --text:#f2f3f5; --text-dim:#9298a3; --blue:#3b7bff; --purple:#9457ff; --mono:'JetBrains Mono', monospace; --display:'Space Grotesk', sans-serif; --body:'Inter', sans-serif; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aditya Dimri — Backend .NET Engineer</title>
+<meta name="description" content="Aditya Dimri — Backend Software Engineer specializing in C#, .NET Core, ASP.NET Core, microservices and REST APIs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root{
+    --void:#0A0B0D;
+    --surface:#111316;
+    --surface-2:#15181C;
+    --ink:#F4F1EA;
+    --ink-dim:#9A9C9F;
+    --ink-faint:#5C5E62;
+    --line:rgba(244,241,234,0.10);
+    --line-strong:rgba(244,241,234,0.22);
+    --signal:#7FB2D6;
+    --signal-dim:rgba(127,178,214,0.14);
+    --bronze:#D68A4C;
+    --bronze-dim:rgba(214,138,76,0.16);
+    --serif:'Instrument Serif', serif;
+    --sans:'Manrope', sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--void);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden;cursor:none;}
+  @media(hover:none){body{cursor:auto;}}
+  ::selection{background:var(--bronze);color:#0A0B0D;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 48px;}
+  @media(max-width:760px){.wrap{padding:0 22px;}}
 
-    /* loader */
-    #loader { position:fixed; inset:0; background:#050505; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px; transition:opacity .6s, visibility .6s; }
-    .loader-mark { font-family:var(--mono); font-size:13px; letter-spacing:.3em; color:var(--text-dim); display:flex; gap:2px; }
-    .loader-bar { width:220px; height:1px; background:rgba(255,255,255,0.1); position:relative; overflow:hidden; }
-    .loader-bar::after { content:''; position:absolute; left:0; top:0; height:100%; width:40%; background:linear-gradient(90deg,var(--blue),var(--purple)); animation:load 1.1s ease-in-out infinite; }
-    @keyframes load { 0%{ transform:translateX(-100%); } 100%{ transform:translateX(350%); } }
+  /* custom cursor */
+  #cursorDot,#cursorRing{position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+  #cursorDot{width:5px;height:5px;background:var(--bronze);}
+  #cursorRing{width:32px;height:32px;border:1px solid var(--line-strong);transition:width .25s,height .25s,border-color .25s,opacity .25s;}
+  #cursorRing.hover{width:56px;height:56px;border-color:var(--bronze);}
+  @media(hover:none){#cursorDot,#cursorRing{display:none;}}
 
-    /* nav */
-    nav { position:fixed; top:0; left:0; right:0; z-index:100; backdrop-filter:blur(16px) saturate(140%); background:rgba(5,5,5,0.55); border-bottom:1px solid rgba(255,255,255,0.06); }
-    .navrow { display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1200px; margin:0 auto; }
-    .logo { font-family:var(--mono); font-size:15px; letter-spacing:.02em; color:var(--text); text-decoration:none; display:flex; align-items:center; gap:8px; }
-    .logo .dot { width:7px; height:7px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--purple)); box-shadow:0 0 12px var(--blue); }
-    .navlinks { display:flex; gap:34px; list-style:none; }
-    .navlinks a { color:var(--text-dim); text-decoration:none; font-size:14px; font-weight:500; transition:color .25s; }
-    .navlinks a:hover { color:var(--text); }
-    .navsocial { display:flex; gap:16px; align-items:center; }
-    .navsocial a { color:var(--text-dim); transition:color .25s, transform .25s; }
-    .navsocial a:hover { color:var(--blue); transform:translateY(-2px); }
-    .navsocial svg { width:18px; height:18px; fill:currentColor; }
-    .navtoggle { display:none; background:none; border:none; color:var(--text); font-size:22px; cursor:pointer; }
-    @media(max-width:860px){ .navlinks { position:fixed; top:64px; left:0; right:0; background:#0a0a0c; flex-direction:column; padding:24px 32px; gap:18px; border-bottom:1px solid var(--panel-border); transform:translateY(-130%); transition:transform .35s ease; } .navlinks.open { transform:translateY(0); } .navtoggle { display:block; } }
+  /* register marks */
+  .register{position:fixed;z-index:60;pointer-events:none;width:20px;height:20px;opacity:.55;}
+  .register::before,.register::after{content:'';position:absolute;background:var(--line-strong);}
+  .register::before{width:100%;height:1px;top:50%;}
+  .register::after{width:1px;height:100%;left:50%;}
+  .register.tl{top:18px;left:18px;}
+  .register.tr{top:18px;right:18px;}
+  .register.bl{bottom:18px;left:18px;}
+  .register.br{bottom:18px;right:18px;}
+  @media(max-width:760px){.register{display:none;}}
 
-    /* hero */
-    .hero { min-height:100vh; display:flex; align-items:center; position:relative; padding-top:80px; }
-    #heroCanvas { position:absolute; top:0; right:0; width:55%; height:100%; z-index:1; opacity:0; }
-    .hero-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:40px; align-items:center; width:100%; }
-    .eyebrow { font-family:var(--mono); font-size:12.5px; color:var(--blue); letter-spacing:.18em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:22px; opacity:0; }
-    .eyebrow::before { content:''; width:24px; height:1px; background:var(--blue); }
-    .hero h1 { font-family:var(--display); font-weight:700; font-size:clamp(2.6rem,5.4vw,4.6rem); line-height:1.04; letter-spacing:-.02em; opacity:0; }
-    .hero h1 .grad { background:linear-gradient(120deg,var(--blue),var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .hero p.role { font-family:var(--mono); font-size:15px; color:var(--text-dim); margin-top:22px; min-height:22px; opacity:0; }
-    .hero p.role .cursor { display:inline-block; width:8px; background:var(--blue); margin-left:2px; animation:blink 1s step-end infinite; }
-    @keyframes blink { 50%{ opacity:0; } }
-    .hero .desc { margin-top:22px; color:var(--text-dim); font-size:16px; max-width:480px; opacity:0; }
-    .hero-ctas { display:flex; gap:14px; margin-top:38px; flex-wrap:wrap; opacity:0; }
-    .btn { font-family:var(--body); font-size:14.5px; font-weight:600; padding:14px 26px; border-radius:10px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; cursor:pointer; border:1px solid transparent; transition:transform .25s, box-shadow .25s, background .25s; }
-    .btn-primary { background:linear-gradient(120deg,var(--blue),var(--purple)); color:#fff; box-shadow:0 8px 30px -8px rgba(59,123,255,0.5); }
-    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 34px -6px rgba(148,87,255,0.6); }
-    .btn-ghost { background:var(--panel); border-color:var(--panel-border); color:var(--text); backdrop-filter:blur(6px); }
-    .btn-ghost:hover { border-color:var(--blue); transform:translateY(-2px); }
-    .scroll-indicator { position:absolute; bottom:34px; left:32px; display:flex; flex-direction:column; align-items:center; gap:10px; font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:.15em; opacity:0; }
-    .scroll-indicator .line { width:1px; height:36px; background:linear-gradient(var(--blue),transparent); animation:scrolldown 1.8s ease infinite; }
-    @keyframes scrolldown { 0%{ transform:scaleY(0); transform-origin:top; } 50%{ transform:scaleY(1); transform-origin:top; } 51%{ transform-origin:bottom; } 100%{ transform:scaleY(0); transform-origin:bottom; } }
+  /* micro-grid texture */
+  .bg-texture{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(244,241,234,0.025) 1px, transparent 1px),linear-gradient(90deg, rgba(244,241,234,0.025) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 75% 60% at 50% 0%, #000 0%, transparent 78%);
+  }
 
-    /* sections */
-    section { padding:130px 0; position:relative; }
-    .section-head { margin-bottom:60px; }
-    .section-eyebrow { font-family:var(--mono); font-size:12px; color:var(--blue); letter-spacing:.18em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-    .section-eyebrow::before { content:''; width:24px; height:1px; background:var(--blue); }
-    .section-head h2 { font-family:var(--display); font-size:clamp(1.9rem,3.4vw,2.7rem); font-weight:700; letter-spacing:-.015em; }
-    .section-head p { color:var(--text-dim); margin-top:14px; max-width:560px; font-size:15.5px; }
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,11,13,0.72);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .navrow{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;max-width:1320px;margin:0 auto;}
+  .logo{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:10px;}
+  .logo .dot{width:6px;height:6px;background:var(--bronze);position:relative;}
+  .logo .dot::after{content:'';position:absolute;inset:-5px;border:1px solid var(--bronze);opacity:.5;animation:pulsering 2.6s ease-out infinite;}
+  @keyframes pulsering{0%{transform:scale(.5);opacity:.6;}100%{transform:scale(2.4);opacity:0;}}
+  .navlinks{display:flex;gap:2px;list-style:none;}
+  .navlinks a{position:relative;text-decoration:none;color:var(--ink-dim);font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;padding:8px 14px;transition:color .2s;}
+  .navlinks a span{color:var(--ink-faint);margin-right:6px;}
+  .navlinks a::after{content:'';position:absolute;left:14px;right:14px;bottom:4px;height:1px;background:var(--bronze);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+  .navlinks a:hover{color:var(--ink);}
+  .navlinks a:hover::after{transform:scaleX(1);}
+  .navtoggle{display:none;background:none;border:none;color:var(--ink);font-size:20px;cursor:pointer;}
+  @media(max-width:920px){
+    .navlinks{position:fixed;top:64px;left:0;right:0;background:var(--surface);flex-direction:column;align-items:flex-start;padding:16px 22px;gap:2px;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .3s ease;}
+    .navlinks.open{transform:translateY(0);}
+    .navlinks a{width:100%;padding:12px 4px;}
+    .navtoggle{display:block;}
+  }
 
-    .glass { background:var(--panel); border:1px solid var(--panel-border); border-radius:16px; backdrop-filter:blur(14px); position:relative; overflow:hidden; }
-    .glass::before { content:''; position:absolute; inset:0; border-radius:16px; padding:1px; background:linear-gradient(135deg, rgba(59,123,255,0.35), transparent 40%, rgba(148,87,255,0.25)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .35s; pointer-events:none; }
-    .glass:hover::before { opacity:1; }
+  /* HERO — asymmetric editorial split */
+  .hero{min-height:100vh;display:grid;grid-template-columns:64px 1fr 360px;padding-top:96px;position:relative;}
+  .hero-rail{display:flex;align-items:center;justify-content:center;border-right:1px solid var(--line);}
+  .hero-rail span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--mono);font-size:11px;letter-spacing:.28em;color:var(--ink-faint);text-transform:uppercase;}
+  .hero-main{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;}
+  .issue-tag{font-family:var(--mono);font-size:11.5px;color:var(--signal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px;opacity:0;}
+  .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(3rem,7.4vw,6.4rem);line-height:0.98;letter-spacing:-.01em;opacity:0;}
+  .hero h1 .italic{font-style:italic;color:var(--signal);}
+  .hero .desc{margin-top:30px;color:var(--ink-dim);font-size:17px;max-width:460px;font-weight:400;opacity:0;}
+  .hero-ctas{display:flex;gap:14px;margin-top:42px;flex-wrap:wrap;opacity:0;}
+  .btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;font-weight:500;padding:15px 26px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;cursor:pointer;border:1px solid var(--line-strong);transition:border-color .25s, background .25s, color .25s;}
+  .btn-primary{background:var(--bronze);color:#0A0B0D;border-color:var(--bronze);}
+  .btn-primary:hover{background:transparent;color:var(--bronze);}
+  .btn-ghost{background:transparent;color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--ink);}
 
-    /* about */
-    .about-grid { display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px; align-items:start; }
-    .about-photo { aspect-ratio:4/5; border-radius:18px; overflow:hidden; position:relative; background:linear-gradient(160deg, rgba(59,123,255,0.18), rgba(148,87,255,0.12)); border:1px solid var(--panel-border); }
-    .about-photo img { width:100%; height:100%; object-fit:cover; mix-blend-mode:luminosity; opacity:0.9; }
-    .about-photo .frame-label { position:absolute; bottom:16px; left:16px; font-family:var(--mono); font-size:11px; color:var(--text-dim); background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:6px; backdrop-filter:blur(6px); }
-    .about-body p { color:var(--text-dim); font-size:15.5px; margin-bottom:16px; }
-    .about-body strong { color:var(--text); font-weight:600; }
-    .stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:36px; }
-    .stat { padding:20px 16px; border-radius:12px; text-align:left; background:var(--panel); border:1px solid var(--panel-border); }
-    .stat .num { font-family:var(--display); font-size:2rem; font-weight:700; background:linear-gradient(120deg,var(--blue),var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .stat .label { font-size:12.5px; color:var(--text-dim); margin-top:4px; font-family:var(--mono); }
-    @media(max-width:860px){ .about-grid { grid-template-columns:1fr; } .stat-row { grid-template-columns:repeat(2,1fr); } }
+  .hero-panel{border-left:1px solid var(--line);padding:64px 40px;display:flex;flex-direction:column;justify-content:center;gap:26px;}
+  .pulse-box{border:1px solid var(--line);padding:18px;opacity:0;}
+  .pulse-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.06em;margin-bottom:12px;text-transform:uppercase;}
+  .pulse-head .live{color:var(--signal);display:flex;align-items:center;gap:6px;}
+  .pulse-head .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--signal);}
+  canvas#pulseCanvas{width:100%;height:64px;display:block;}
+  .hero-stats{display:flex;flex-direction:column;gap:0;opacity:0;}
+  .hero-stat{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-top:1px solid var(--line);}
+  .hero-stat .v{font-family:var(--serif);font-size:1.7rem;color:var(--ink);}
+  .hero-stat .l{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.04em;text-transform:uppercase;text-align:right;}
+  @media(max-width:1080px){.hero{grid-template-columns:1fr;}.hero-rail{display:none;}.hero-panel{border-left:none;border-top:1px solid var(--line);}}
+  @media(max-width:760px){.hero-main{padding:48px 22px;}.hero-panel{padding:40px 22px;}}
 
-    /* skills */
-    .skills-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-    .skill-card { padding:26px 22px; transition:transform .3s, border-color .3s; }
-    .skill-card:hover { transform:translateY(-6px); border-color:rgba(59,123,255,0.4); }
-    .skill-card .icon { width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(59,123,255,0.18), rgba(148,87,255,0.18)); margin-bottom:16px; font-family:var(--mono); font-size:14px; color:var(--blue); }
-    .skill-card h3 { font-family:var(--display); font-size:16px; margin-bottom:10px; }
-    .skill-card .taglist { display:flex; flex-wrap:wrap; gap:6px; }
-    .skill-card .taglist span { font-family:var(--mono); font-size:11px; color:var(--text-dim); border:1px solid var(--panel-border); padding:4px 8px; border-radius:6px; }
-    @media(max-width:860px){ .skills-grid { grid-template-columns:repeat(2,1fr); } }
+  /* sections */
+  section{padding:150px 0;position:relative;border-top:1px solid var(--line);}
+  .section-head{display:grid;grid-template-columns:120px 1fr;gap:24px;margin-bottom:80px;align-items:start;}
+  .section-index{font-family:var(--serif);font-size:3.2rem;color:var(--ink-faint);line-height:1;font-style:italic;}
+  .section-head h2{font-family:var(--serif);font-size:clamp(2.1rem,3.6vw,3.2rem);font-weight:400;letter-spacing:-.01em;}
+  .section-head .kicker{font-family:var(--mono);font-size:11px;color:var(--signal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+  .section-head p{color:var(--ink-dim);margin-top:16px;font-size:15.5px;max-width:520px;}
+  @media(max-width:760px){.section-head{grid-template-columns:1fr;gap:10px;}.section-index{font-size:2rem;}}
 
-    /* projects */
-    .projects-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
-    .project-card { padding:0; display:flex; flex-direction:column; transition:transform .35s; }
-    .project-card:hover { transform:translateY(-6px); }
-    .project-media { height:150px; position:relative; overflow:hidden; background:radial-gradient(circle at 30% 20%, rgba(59,123,255,0.35), transparent 55%), radial-gradient(circle at 80% 80%, rgba(148,87,255,0.3), transparent 55%), #0c0d10; display:flex; align-items:center; justify-content:center; }
-    .project-media img { width:100%; height:100%; object-fit:cover; display:block; }
-    .project-body { padding:24px; }
-    .project-body h3 { font-family:var(--display); font-size:18px; margin-bottom:10px; }
-    .project-body p { color:var(--text-dim); font-size:14px; margin-bottom:16px; }
-    .tech-badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
-    .tech-badges span { font-family:var(--mono); font-size:10.5px; color:var(--blue); background:rgba(59,123,255,0.1); border:1px solid rgba(59,123,255,0.25); padding:4px 9px; border-radius:20px; }
-    .project-links { display:flex; gap:16px; }
-    .project-links a { font-size:13px; color:var(--text-dim); text-decoration:none; font-weight:600; display:flex; align-items:center; gap:6px; transition:color .25s; }
-    .project-links a:hover { color:var(--text); }
-    @media(max-width:860px){ .projects-grid { grid-template-columns:1fr; } }
+  /* about */
+  .about-grid{display:grid;grid-template-columns:0.62fr 1.38fr;gap:0;border:1px solid var(--line);}
+  .about-photo{aspect-ratio:3/4;overflow:hidden;position:relative;border-right:1px solid var(--line);background:linear-gradient(160deg,#181A1E,#0F1114);}
+  .about-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(45%) contrast(1.05);}
+  .about-photo .frame-label{position:absolute;bottom:16px;left:16px;font-family:var(--mono);font-size:10px;color:var(--ink);background:rgba(10,11,13,0.75);border:1px solid var(--line-strong);padding:5px 9px;}
+  .about-body{padding:44px 48px;}
+  .about-body .pullquote{font-family:var(--serif);font-size:1.55rem;font-style:italic;color:var(--ink);line-height:1.35;margin-bottom:26px;}
+  .about-body p{color:var(--ink-dim);font-size:15.5px;margin-bottom:16px;}
+  .about-body strong{color:var(--ink);font-weight:600;}
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);margin-top:38px;border-top:1px solid var(--line);}
+  .stat{padding:20px 4px 0;border-left:1px solid var(--line);padding-left:16px;}
+  .stat:first-child{border-left:none;padding-left:0;}
+  .stat .num{font-family:var(--serif);font-size:2rem;color:var(--bronze);}
+  .stat .label{font-size:10.5px;color:var(--ink-faint);margin-top:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.03em;}
+  @media(max-width:900px){.about-grid{grid-template-columns:1fr;}.about-photo{border-right:none;border-bottom:1px solid var(--line);aspect-ratio:16/10;}.about-body{padding:32px 22px;}.stat-row{grid-template-columns:repeat(2,1fr);}.stat:nth-child(3){border-left:none;padding-left:0;}}
 
-    /* experience */
-    .timeline { position:relative; padding-left:36px; }
-    .timeline::before { content:''; position:absolute; left:6px; top:6px; bottom:6px; width:1px; background:linear-gradient(var(--blue),var(--purple)); }
-    .tl-item { position:relative; padding-bottom:52px; }
-    .tl-item:last-child { padding-bottom:0; }
-    .tl-dot { position:absolute; left:-36px; top:4px; width:13px; height:13px; border-radius:50%; background:var(--bg); border:2px solid var(--blue); box-shadow:0 0 0 4px rgba(59,123,255,0.12); }
-    .tl-item h3 { font-family:var(--display); font-size:19px; }
-    .tl-item .company { color:var(--blue); font-family:var(--mono); font-size:13px; margin-top:4px; }
-    .tl-item .dates { color:var(--text-dim); font-size:12.5px; font-family:var(--mono); margin-top:2px; }
-    .tl-item ul { margin-top:14px; padding-left:18px; color:var(--text-dim); font-size:14.5px; }
-    .tl-item li { margin-bottom:8px; }
+  /* skills — schematic node grid */
+  .schematic{border:1px solid var(--line);}
+  .schematic-row{display:grid;grid-template-columns:220px 1fr;border-top:1px solid var(--line);}
+  .schematic-row:first-child{border-top:none;}
+  .schematic-label{padding:26px 24px;font-family:var(--mono);font-size:12px;color:var(--signal);letter-spacing:.04em;border-right:1px solid var(--line);display:flex;align-items:center;gap:10px;}
+  .schematic-label::before{content:'';width:6px;height:6px;background:var(--signal);}
+  .schematic-nodes{display:flex;flex-wrap:wrap;gap:0;}
+  .node{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);padding:14px 20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background .2s,color .2s;flex:1 1 auto;white-space:nowrap;}
+  .node:hover{background:var(--signal-dim);color:var(--ink);}
+  @media(max-width:900px){.schematic-row{grid-template-columns:1fr;}.schematic-label{border-right:none;border-bottom:1px solid var(--line);padding:16px 20px;}}
 
-    /* services */
-    .services-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-    .service-card { padding:30px 26px; }
-    .service-card .num { font-family:var(--mono); font-size:12px; color:var(--text-dim); }
-    .service-card h3 { font-family:var(--display); font-size:18px; margin:14px 0 10px; }
-    .service-card p { color:var(--text-dim); font-size:14px; }
-    @media(max-width:860px){ .services-grid { grid-template-columns:1fr; } }
+  /* projects — alternating split reveal */
+  .project-panel{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-top:none;min-height:420px;}
+  .project-panel:first-child{border-top:1px solid var(--line);}
+  .project-panel.flip{direction:rtl;}
+  .project-panel.flip > *{direction:ltr;}
+  .project-media{position:relative;overflow:hidden;background:linear-gradient(160deg,#181A1E,#0F1114);border-right:1px solid var(--line);}
+  .project-panel.flip .project-media{border-right:none;border-left:1px solid var(--line);}
+  .project-media img{width:100%;height:100%;object-fit:cover;filter:grayscale(30%) contrast(1.05);transition:filter .4s, transform .5s;}
+  .project-panel:hover .project-media img{filter:grayscale(0%) contrast(1.05);transform:scale(1.03);}
+  .project-content{padding:52px 56px;display:flex;flex-direction:column;justify-content:center;}
+  .project-index{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.06em;margin-bottom:18px;}
+  .project-content h3{font-family:var(--serif);font-size:2.1rem;font-weight:400;margin-bottom:16px;line-height:1.1;}
+  .project-content p{color:var(--ink-dim);font-size:15px;margin-bottom:22px;max-width:420px;}
+  .tech-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px;}
+  .tech-badges span{font-family:var(--mono);font-size:10.5px;color:var(--signal);border:1px solid var(--line-strong);padding:5px 10px;}
+  .project-links a{font-family:var(--mono);font-size:12px;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--ink-faint);padding-bottom:3px;transition:border-color .2s,color .2s;}
+  .project-links a:hover{color:var(--bronze);border-color:var(--bronze);}
+  @media(max-width:900px){.project-panel,.project-panel.flip{grid-template-columns:1fr;direction:ltr;}.project-media{border-right:none !important;border-left:none !important;border-bottom:1px solid var(--line);aspect-ratio:16/10;}.project-content{padding:36px 22px;}.project-content h3{font-size:1.7rem;}}
 
-    /* contact */
-    .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:50px; }
-    .contact-form { display:flex; flex-direction:column; gap:16px; padding:32px; }
-    .field { display:flex; flex-direction:column; gap:8px; }
-    .field label { font-family:var(--mono); font-size:11.5px; color:var(--text-dim); letter-spacing:.05em; }
-    .field input, .field textarea { background:rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:9px; padding:13px 14px; color:var(--text); font-family:var(--body); font-size:14px; outline:none; transition:border-color .25s; }
-    .field input:focus, .field textarea:focus { border-color:var(--blue); }
-    .contact-info { padding:32px; display:flex; flex-direction:column; gap:24px; justify-content:center; }
-    .info-row { display:flex; gap:14px; align-items:flex-start; }
-    .info-row .ic { width:38px; height:38px; border-radius:9px; background:rgba(59,123,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--blue); }
-    .info-row .lbl { font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:.05em; }
-    .info-row .val { font-size:14.5px; margin-top:3px; }
-    .info-row a { color:var(--text); text-decoration:none; }
-    .info-row a:hover { color:var(--blue); }
-    @media(max-width:860px){ .contact-grid { grid-template-columns:1fr; } }
+  /* experience — ruler timeline */
+  .ruler{position:relative;}
+  .change-entry{position:relative;display:grid;grid-template-columns:100px 1fr;gap:0;padding:48px 0;border-top:1px solid var(--line);}
+  .change-entry:first-child{border-top:1px solid var(--line);}
+  .change-tick{position:relative;}
+  .change-tick .yr{font-family:var(--serif);font-style:italic;font-size:1.9rem;color:var(--bronze);}
+  .change-tick::after{content:'';position:absolute;left:100px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--void);border:2px solid var(--bronze);}
+  .change-body{padding-left:48px;}
+  .change-body h3{font-family:var(--sans);font-size:19px;font-weight:700;}
+  .change-body .company{color:var(--ink-dim);font-family:var(--mono);font-size:12px;margin-top:5px;margin-bottom:6px;}
+  .change-body .dates{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:16px;}
+  .change-body ul{padding-left:18px;color:var(--ink-dim);font-size:14.5px;}
+  .change-body li{margin-bottom:9px;}
+  .change-body li::marker{color:var(--signal);}
+  @media(max-width:700px){.change-entry{grid-template-columns:1fr;gap:6px;}.change-tick::after{display:none;}.change-body{padding-left:0;}}
 
-    /* footer */
-    footer { border-top:1px solid var(--panel-border); padding:44px 0; }
-    .footer-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
-    .footer-links { display:flex; gap:24px; list-style:none; }
-    .footer-links a { color:var(--text-dim); text-decoration:none; font-size:13.5px; }
-    .footer-links a:hover { color:var(--text); }
-    .footer-copy { font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+  /* services — spec sheet */
+  .spec-sheet{border:1px solid var(--line);}
+  .spec-row{display:grid;grid-template-columns:70px 1.3fr 2fr;border-top:1px solid var(--line);transition:background .2s;}
+  .spec-row:first-child{border-top:none;}
+  .spec-row:hover{background:var(--surface);}
+  .spec-row .idx{padding:26px 20px;font-family:var(--mono);font-size:12px;color:var(--bronze);border-right:1px solid var(--line);display:flex;align-items:center;}
+  .spec-row h3{padding:26px 24px;font-family:var(--sans);font-size:16.5px;font-weight:700;border-right:1px solid var(--line);display:flex;align-items:center;}
+  .spec-row p{padding:26px 24px;color:var(--ink-dim);font-size:14.5px;display:flex;align-items:center;}
+  @media(max-width:800px){.spec-row{grid-template-columns:1fr;}.spec-row .idx,.spec-row h3,.spec-row p{border-right:none;padding:14px 18px;}.spec-row .idx{border-bottom:1px solid var(--line);}}
 
-    .reveal { opacity:0; transform:translateY(28px); }
+  /* contact */
+  .contact-block{text-align:left;}
+  .contact-block .kicker{font-family:var(--mono);font-size:11px;color:var(--signal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px;}
+  .contact-block h2{font-family:var(--serif);font-size:clamp(2.6rem,7vw,6rem);font-weight:400;line-height:1.02;letter-spacing:-.01em;}
+  .contact-block h2 a{text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line-strong);transition:color .25s, border-color .25s;}
+  .contact-block h2 a:hover{color:var(--bronze);border-color:var(--bronze);}
+  .contact-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:64px;}
+  .contact-meta .info-row{padding:24px 24px 0 0;border-left:1px solid var(--line);padding-left:20px;}
+  .contact-meta .info-row:first-child{border-left:none;padding-left:0;}
+  .info-row .lbl{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.05em;text-transform:uppercase;}
+  .info-row .val{font-size:14.5px;margin-top:8px;}
+  .info-row a{text-decoration:none;color:var(--ink);}
+  .info-row a:hover{color:var(--bronze);}
+  @media(max-width:760px){.contact-meta{grid-template-columns:1fr;}.contact-meta .info-row{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:18px;}.contact-meta .info-row:first-child{border-top:none;padding-top:0;}}
 
-    #privacyModal { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:24px; }
-    #privacyModal.open { display:flex; }
-    .modal-card { max-width:640px; max-height:80vh; overflow-y:auto; padding:36px; background:#0a0a0c; border-radius:18px; border:1px solid var(--panel-border); position:relative; }
-    .modal-card h2 { font-family:var(--display); margin-bottom:18px; }
-    .modal-card h4 { margin-top:20px; margin-bottom:8px; font-family:var(--display); font-size:15px; color:var(--blue); }
-    .modal-card p { color:var(--text-dim); font-size:14px; margin-bottom:10px; }
-    .modal-close { position:absolute; top:18px; right:18px; background:none; border:none; color:var(--text-dim); font-size:20px; cursor:pointer; }
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:40px 0;}
+  .footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;}
+  .footer-links{display:flex;gap:26px;list-style:none;}
+  .footer-links a{color:var(--ink-dim);text-decoration:none;font-size:12.5px;font-family:var(--mono);}
+  .footer-links a:hover{color:var(--ink);}
+  .footer-copy{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
 
-    @media (prefers-reduced-motion: reduce){ * { animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
-  </style>
+  .reveal{opacity:0;transform:translateY(30px);}
+
+  #privacyModal{position:fixed;inset:0;background:rgba(10,11,13,0.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;}
+  #privacyModal.open{display:flex;}
+  .modal-card{max-width:600px;max-height:80vh;overflow-y:auto;padding:40px;background:var(--surface);border:1px solid var(--line-strong);position:relative;}
+  .modal-card h2{font-family:var(--serif);margin-bottom:18px;font-weight:400;font-size:1.9rem;}
+  .modal-card h4{margin-top:18px;margin-bottom:6px;font-family:var(--mono);font-size:12px;color:var(--signal);text-transform:uppercase;letter-spacing:.04em;}
+  .modal-card p{color:var(--ink-dim);font-size:14px;margin-bottom:8px;}
+  .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--ink-dim);font-size:20px;cursor:pointer;}
+
+  @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}}
+</style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="loader-mark">INITIALIZING&nbsp;PORTFOLIO</div>
-  <div class="loader-bar"></div>
-</div>
-
-<div class="grid-bg"></div>
+<div id="cursorRing"></div>
+<div id="cursorDot"></div>
+<div class="register tl"></div>
+<div class="register tr"></div>
+<div class="register bl"></div>
+<div class="register br"></div>
+<div class="bg-texture"></div>
 
 <nav>
   <div class="navrow">
-    <a href="#home" class="logo"><span class="dot"></span>aditya.dimri</a>
+    <a href="#home" class="logo"><span class="dot"></span>ADITYA DIMRI</a>
     <ul class="navlinks" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#about"><span>01</span>About</a></li>
+      <li><a href="#skills"><span>02</span>Stack</a></li>
+      <li><a href="#projects"><span>03</span>Work</a></li>
+      <li><a href="#experience"><span>04</span>Experience</a></li>
+      <li><a href="#services"><span>05</span>Services</a></li>
+      <li><a href="#contact"><span>06</span>Contact</a></li>
     </ul>
-    <div class="navsocial">
-      <a href="https://github.com/adityapandit343" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.15c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.07.78 2.16v3.2c0 .31.21.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg></a>
-      <a href="https://www.linkedin.com/in/aditya-dimri-33734427b" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.62 0 4.28 2.38 4.28 5.48v6.26ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z"/></svg></a>
-      <a href="https://www.upwork.com/freelancers/~01ea969c19f0c5bf74" target="_blank" rel="noopener" aria-label="Upwork"><svg viewBox="0 0 24 24"><path d="M18.56 9.65c-1.98 0-3.5 1.3-4.14 3.24-.97-1.44-1.7-3.16-2.1-4.6H9.9v5.7c0 1.15-.94 2.1-2.1 2.1s-2.09-.95-2.09-2.1V8.29H3.29v5.7a4.53 4.53 0 0 0 4.52 4.53c1.85 0 3.4-1.15 4.09-2.75.36.75.8 1.53 1.34 2.24l-1.16 5.44h2.5l.84-3.95c.9.58 1.95.93 3.14.93a4.83 4.83 0 0 0 0-9.66Zm0 7.14c-1.3 0-2.34-.71-2.97-1.68.06-.24.79-3.6 2.97-3.6a2.65 2.65 0 0 1 0 5.28Z"/></svg></a>
-      <a href="mailto:aditya21766@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5v-13Zm2.2.5 7.8 6.2L19.8 6H4.2ZM20 8.3l-7.4 5.9a1 1 0 0 1-1.24 0L4 8.3v10.2h16V8.3Z"/></svg></a>
-    </div>
     <button class="navtoggle" id="navToggle" aria-label="Menu">☰</button>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="home">
-  <canvas id="heroCanvas"></canvas>
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow" id="e1">Backend Software Engineer · Mohali, India</div>
-      <h1 id="h1">Building <span class="grad">distributed systems</span><br>that don't fall over.</h1>
-      <p class="role" id="role">&gt; <span id="typed"></span><span class="cursor">&nbsp;</span></p>
-      <p class="desc" id="desc">Aditya Dimri — 2+ years shipping production microservices in C# and .NET Core. REST APIs, event-driven architecture, and SQL at a scale that has to survive Monday morning traffic.</p>
-      <div class="hero-ctas" id="ctas">
-        <a href="#projects" class="btn btn-primary">View Projects</a>
-        <a href="Resume.pdf" download="Aditya_Resume.pdf" class="btn btn-ghost" id="ResumeBtn">
-    Download Resume
-</a>
-        <a href="#contact" class="btn btn-ghost">Contact Me</a>
-      </div>
+<section class="hero" id="home" style="border-top:none;padding:0;">
+  <div class="hero-rail"><span>BACKEND ENGINEERING · MOHALI, INDIA · EST. 2023</span></div>
+  <div class="hero-main">
+    <div class="issue-tag" id="e1">Vol. 02 — Systems &amp; Reliability</div>
+    <h1 id="h1">Backend<br>systems that<br><span class="italic">stay online.</span></h1>
+    <p class="desc" id="desc">I'm Aditya Dimri. I design and run production services in C# and .NET Core — REST APIs, event-driven microservices, and SQL Server tuned to hold up under real traffic, not demo traffic.</p>
+    <div class="hero-ctas" id="ctas">
+      <a href="#projects" class="btn btn-primary">View Work →</a>
+      <a href="Resume.pdf" download="Aditya_Resume.pdf" class="btn btn-ghost" id="ResumeBtn">Download Résumé</a>
     </div>
-    <div></div>
   </div>
-  <div class="scroll-indicator" id="scrollInd"><span>SCROLL</span><span class="line"></span></div>
+  <div class="hero-panel">
+    <div class="pulse-box" id="pulseBox">
+      <div class="pulse-head"><span>SYS.PULSE</span><span class="live">OPERATIONAL</span></div>
+      <canvas id="pulseCanvas"></canvas>
+    </div>
+    <div class="hero-stats" id="heroStats">
+      <div class="hero-stat"><span class="v" data-count="99.5" data-suffix="%">0</span><span class="l">Uptime<br>Delivered</span></div>
+      <div class="hero-stat"><span class="v" data-count="40" data-suffix="%↓">0</span><span class="l">API Latency<br>Cut</span></div>
+      <div class="hero-stat"><span class="v" data-count="5" data-suffix="M+">0</span><span class="l">Records<br>/Day</span></div>
+      <div class="hero-stat"><span class="v" data-count="1500" data-suffix="+">0</span><span class="l">Customers<br>Served</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- ABOUT -->
 <section id="about">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="section-eyebrow">01 · About</div>
-      <h2>Backend by trade, systems thinker by habit.</h2>
-    </div>
-    <div class="about-grid">
-      <div class="about-photo reveal">
-        <img src="profile1.jpeg"
-             alt="Aditya Dimri placeholder" />
-        <div class="frame-label">● .NET · C#</div>
+      <div class="section-index">01</div>
+      <div>
+        <div class="kicker">Profile</div>
+        <h2>Backend by trade, systems thinker by habit.</h2>
       </div>
-      <div class="about-body reveal">
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-photo">
+        <img src="profile1.jpeg" alt="Aditya Dimri" />
+        <div class="frame-label">.NET · C#</div>
+      </div>
+      <div class="about-body">
+        <p class="pullquote">"Clean architecture and SOLID principles aren't buzzwords — they're the difference between a system you can extend and one you're afraid to touch."</p>
         <p>I'm a <strong>Backend .NET Engineer</strong> based in Mohali, Punjab, currently building and hardening services at <strong>Lord Mahavira Services Pvt. Ltd.</strong>, where I work on a SaaS platform serving 1,500+ customers.</p>
-        <p>My day-to-day lives in <strong>C#, ASP.NET Core, Entity Framework Core, and SQL Server</strong> — designing REST APIs, tuning queries, and keeping RabbitMQ-driven microservices honest under load. I care about clean architecture and SOLID principles not as buzzwords, but because they're the difference between a system you can extend and one you're afraid to touch.</p>
-        <p>Before this, I trained as a full-stack developer at CS Infotech, which is where the front-end curiosity you see in this site comes from.</p>
+        <p>My day-to-day lives in <strong>C#, ASP.NET Core, Entity Framework Core, and SQL Server</strong> — designing REST APIs, tuning queries, and keeping RabbitMQ-driven microservices honest under load.</p>
+        <p>Before this, I trained as a full-stack developer at CS Infotech, which is where the front-end sensibility on this page comes from.</p>
         <div class="stat-row">
           <div class="stat"><div class="num" data-count="15">0</div><div class="label">Projects Shipped</div></div>
           <div class="stat"><div class="num" data-count="3">0</div><div class="label">Years Experience</div></div>
@@ -255,45 +315,77 @@
 <section id="skills">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="section-eyebrow">02 · Skills</div>
-      <h2>The stack I build with.</h2>
-      <p>From API to index — the tools I reach for across the request lifecycle.</p>
+      <div class="section-index">02</div>
+      <div>
+        <div class="kicker">Stack</div>
+        <h2>The systems I build with.</h2>
+        <p>From API to index — the tools I reach for across the request lifecycle.</p>
+      </div>
     </div>
-    <div class="skills-grid">
-      <div class="glass skill-card reveal"><div class="icon">{ }</div><h3>Languages & Frameworks</h3><div class="taglist"><span>C#</span><span>.NET Core 6/8</span><span>ASP.NET Core</span><span>ASP.NET MVC</span><span>EF Core</span><span>LINQ</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">▲</div><h3>Architecture</h3><div class="taglist"><span>Microservices</span><span>REST APIs</span><span>Clean Architecture</span><span>SOLID</span><span>Event-Driven</span><span>RabbitMQ</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">▤</div><h3>Data & Caching</h3><div class="taglist"><span>SQL Server</span><span>PostgreSQL</span><span>Stored Procedures</span><span>Redis</span><span>Index Tuning</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">☁</div><h3>Cloud & Security</h3><div class="taglist"><span>Azure</span><span>Azure AD</span><span>IIS</span><span>Hangfire</span><span>OAuth 2.0</span><span>JWT</span><span>RBAC</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">◆</div><h3>Frontend</h3><div class="taglist"><span>JavaScript</span><span>jQuery</span><span>React.js</span><span>HTML</span><span>CSS</span><span>Bootstrap</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">⚙</div><h3>Tools & Practices</h3><div class="taglist"><span>Git</span><span>Docker</span><span>Postman</span><span>CI/CD</span><span>Agile</span><span>Unit Testing</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">✎</div><h3>Design</h3><div class="taglist"><span>Design Patterns</span><span>OOP</span><span>System Design</span></div></div>
-      <div class="glass skill-card reveal"><div class="icon">✓</div><h3>Professional</h3><div class="taglist"><span>Problem Solving</span><span>Communication</span><span>Team Collaboration</span></div></div>
+    <div class="schematic reveal">
+      <div class="schematic-row"><div class="schematic-label">Languages</div><div class="schematic-nodes"><div class="node">C#</div><div class="node">.NET Core 6/8</div><div class="node">ASP.NET Core</div><div class="node">ASP.NET MVC</div><div class="node">EF Core</div><div class="node">LINQ</div></div></div>
+      <div class="schematic-row"><div class="schematic-label">Architecture</div><div class="schematic-nodes"><div class="node">Microservices</div><div class="node">REST APIs</div><div class="node">Clean Architecture</div><div class="node">SOLID</div><div class="node">Event-Driven</div><div class="node">RabbitMQ</div></div></div>
+      <div class="schematic-row"><div class="schematic-label">Data & Caching</div><div class="schematic-nodes"><div class="node">SQL Server</div><div class="node">PostgreSQL</div><div class="node">Stored Procedures</div><div class="node">Redis</div><div class="node">Index Tuning</div></div></div>
+      <div class="schematic-row"><div class="schematic-label">Cloud & Security</div><div class="schematic-nodes"><div class="node">Azure</div><div class="node">Azure AD</div><div class="node">IIS</div><div class="node">Hangfire</div><div class="node">OAuth 2.0</div><div class="node">JWT</div><div class="node">RBAC</div></div></div>
+      <div class="schematic-row"><div class="schematic-label">Frontend</div><div class="schematic-nodes"><div class="node">JavaScript</div><div class="node">jQuery</div><div class="node">React.js</div><div class="node">HTML/CSS</div><div class="node">Bootstrap</div></div></div>
+      <div class="schematic-row"><div class="schematic-label">Tools & Practice</div><div class="schematic-nodes"><div class="node">Git</div><div class="node">Docker</div><div class="node">Postman</div><div class="node">CI/CD</div><div class="node">Agile</div><div class="node">Unit Testing</div></div></div>
     </div>
   </div>
 </section>
 
 <!-- PROJECTS -->
-<section id="projects">
+<section id="projects" style="padding-bottom:0;">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="section-eyebrow">03 · Projects</div>
-      <h2>Selected work.</h2>
-      <p>Systems built to move data reliably — from bulk messaging to hospital intake to ERP middleware.</p>
+      <div class="section-index">03</div>
+      <div>
+        <div class="kicker">Selected Work</div>
+        <h2>Systems built to move data reliably.</h2>
+        <p>From bulk messaging to hospital intake to ERP middleware.</p>
+      </div>
     </div>
-    <div class="projects-grid" id="projectGrid"></div>
   </div>
+  <div id="projectGrid"></div>
 </section>
 
 <!-- EXPERIENCE -->
 <section id="experience">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="section-eyebrow">04 · Experience</div>
-      <h2>Where I've worked.</h2>
+      <div class="section-index">04</div>
+      <div>
+        <div class="kicker">Career</div>
+        <h2>Where I've worked.</h2>
+      </div>
     </div>
-    <div class="timeline">
-      <div class="tl-item glass reveal" style="padding:28px 30px;"><div class="tl-dot"></div><h3>.NET Developer</h3><div class="company">Lord Mahavira Services Pvt. Ltd. — Greater Noida, India</div><div class="dates">Oct 2024 — Apr 2026</div><ul><li>Develop and optimize backend services in C# and .NET Core with Redis caching, processing 5M+ records/day and improving throughput by 30%.</li><li>Design and test 15+ REST APIs and Web API endpoints using RabbitMQ and microservices, secured with OAuth 2.0/JWT.</li><li>Maintain and troubleshoot 50,000+ daily Hangfire jobs, optimizing SQL Server queries via EF Core and LINQ — cutting API latency by 40%.</li><li>Integrate Azure AD and Microsoft Graph API for 1,000+ users.</li></ul></div>
-      <div class="tl-item glass reveal" style="padding:28px 30px;"><div class="tl-dot"></div><h3>Full Stack Developer Trainee</h3><div class="company">CS Infotech — Chandigarh, India</div><div class="dates">Aug 2023 — Feb 2024</div><ul><li>Co-developed a responsive e-commerce platform with JavaScript, jQuery, React.js and ASP.NET MVC, improving engagement by 25%.</li><li>Debugged and optimized SQL Server queries, views and stored procedures — cutting latency by 40% under peak load.</li><li>Supported REST API integration, unit testing and Git-based collaboration in Agile workflows.</li></ul></div>
+    <div class="ruler reveal">
+      <div class="change-entry">
+        <div class="change-tick"><div class="yr">'24</div></div>
+        <div class="change-body">
+          <h3>.NET Developer</h3>
+          <div class="company">Lord Mahavira Services Pvt. Ltd. — Greater Noida, India</div>
+          <div class="dates">Oct 2024 — Present</div>
+          <ul>
+            <li>Develop and optimize backend services in C# and .NET Core with Redis caching, processing 5M+ records/day and improving throughput by 30%.</li>
+            <li>Design and test 15+ REST APIs and Web API endpoints using RabbitMQ and microservices, secured with OAuth 2.0/JWT.</li>
+            <li>Maintain and troubleshoot 50,000+ daily Hangfire jobs, optimizing SQL Server queries via EF Core and LINQ — cutting API latency by 40%.</li>
+            <li>Integrate Azure AD and Microsoft Graph API for 1,000+ users.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="change-entry">
+        <div class="change-tick"><div class="yr">'23</div></div>
+        <div class="change-body">
+          <h3>Full Stack Developer Trainee</h3>
+          <div class="company">CS Infotech — Chandigarh, India</div>
+          <div class="dates">Aug 2023 — Feb 2024</div>
+          <ul>
+            <li>Co-developed a responsive e-commerce platform with JavaScript, jQuery, React.js and ASP.NET MVC, improving engagement by 25%.</li>
+            <li>Debugged and optimized SQL Server queries, views and stored procedures — cutting latency by 40% under peak load.</li>
+            <li>Supported REST API integration, unit testing and Git-based collaboration in Agile workflows.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -302,16 +394,19 @@
 <section id="services">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="section-eyebrow">05 · Services</div>
-      <h2>How I can help.</h2>
+      <div class="section-index">05</div>
+      <div>
+        <div class="kicker">Capabilities</div>
+        <h2>How I can help.</h2>
+      </div>
     </div>
-    <div class="services-grid">
-      <div class="glass service-card reveal"><div class="num">01</div><h3>API Design & Development</h3><p>REST and Web API endpoints designed for clarity, versioning, and load — built on ASP.NET Core.</p></div>
-      <div class="glass service-card reveal"><div class="num">02</div><h3>Microservices Architecture</h3><p>Event-driven services connected with RabbitMQ, built around clean architecture and SOLID.</p></div>
-      <div class="glass service-card reveal"><div class="num">03</div><h3>Database Optimization</h3><p>Query tuning, indexing, and stored procedure work on SQL Server and PostgreSQL.</p></div>
-      <div class="glass service-card reveal"><div class="num">04</div><h3>Third-Party Integrations</h3><p>Webhook-based systems, Azure AD, Graph API, and bot platform integrations.</p></div>
-      <div class="glass service-card reveal"><div class="num">05</div><h3>Legacy System Modernization</h3><p>Migrating ASP.NET MVC systems toward modern .NET Core architecture.</p></div>
-      <div class="glass service-card reveal"><div class="num">06</div><h3>Performance Optimization</h3><p>Caching strategy with Redis, job tuning with Hangfire, and latency reduction across the stack.</p></div>
+    <div class="spec-sheet reveal">
+      <div class="spec-row"><div class="idx">01</div><h3>API Design & Development</h3><p>REST and Web API endpoints designed for clarity, versioning, and load — built on ASP.NET Core.</p></div>
+      <div class="spec-row"><div class="idx">02</div><h3>Microservices Architecture</h3><p>Event-driven services connected with RabbitMQ, built around clean architecture and SOLID.</p></div>
+      <div class="spec-row"><div class="idx">03</div><h3>Database Optimization</h3><p>Query tuning, indexing, and stored procedure work on SQL Server and PostgreSQL.</p></div>
+      <div class="spec-row"><div class="idx">04</div><h3>Third-Party Integrations</h3><p>Webhook-based systems, Azure AD, Graph API, and bot platform integrations.</p></div>
+      <div class="spec-row"><div class="idx">05</div><h3>Legacy Modernization</h3><p>Migrating ASP.NET MVC systems toward modern .NET Core architecture.</p></div>
+      <div class="spec-row"><div class="idx">06</div><h3>Performance Optimization</h3><p>Caching strategy with Redis, job tuning with Hangfire, and latency reduction across the stack.</p></div>
     </div>
   </div>
 </section>
@@ -319,24 +414,18 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div class="section-eyebrow">06 · Contact</div>
-      <h2>Let's build something reliable.</h2>
-      <p>Open to backend and full-stack opportunities — reach out below.</p>
-    </div>
-    <div class="contact-grid">
-      <!-- <form class="glass contact-form reveal" onsubmit="event.preventDefault(); this.querySelector('.btn').textContent='Sent ✓';">
-        <div class="field"><label>NAME</label><input type="text" required placeholder="Your name" /></div>
-        <div class="field"><label>EMAIL</label><input type="email" required placeholder="you@example.com" /></div>
-        <div class="field"><label>SUBJECT</label><input type="text" placeholder="What's this about?" /></div>
-        <div class="field"><label>MESSAGE</label><textarea rows="4" required placeholder="Tell me about the project..."></textarea></div>
-        <button class="btn btn-primary" type="submit" style="margin-top:8px;justify-content:center;">Send Message</button>
-      </form> -->
-      <div class="glass contact-info reveal">
-        <div class="info-row"><div class="ic">✉</div><div><div class="lbl">EMAIL</div><div class="val"><a href="mailto:aditya21766@gmail.com">aditya21766@gmail.com</a></div></div></div>
-        <div class="info-row"><div class="ic">☎</div><div><div class="lbl">PHONE</div><div class="val"><a href="tel:+916280142908">+91 62801 42908</a></div></div></div>
-        <div class="info-row"><div class="ic">◎</div><div><div class="lbl">LOCATION</div><div class="val">Mohali, Punjab, India</div></div></div>
-        <div class="info-row"><div class="ic">⚙</div><div><div class="lbl">HIRE ME ON</div><div class="val"><a href="https://www.upwork.com/freelancers/~01ea969c19f0c5bf74" target="_blank" rel="noopener">Upwork profile →</a></div></div></div>
+    <div class="contact-block reveal">
+      <div class="kicker">06 — Get in touch</div>
+      <h2>Let's build<br>something<br><a href="mailto:aditya21766@gmail.com">reliable →</a></h2>
+      <div class="contact-meta">
+        <div class="info-row"><div class="lbl">Email</div><div class="val"><a href="mailto:aditya21766@gmail.com">aditya21766@gmail.com</a></div></div>
+        <div class="info-row"><div class="lbl">Phone</div><div class="val"><a href="tel:+916280142908">+91 62801 42908</a></div></div>
+        <div class="info-row"><div class="lbl">Location</div><div class="val">Mohali, Punjab, India</div></div>
+      </div>
+      <div class="contact-meta" style="margin-top:0;border-top:none;">
+        <div class="info-row"><div class="lbl">GitHub</div><div class="val"><a href="https://github.com/adityapandit343" target="_blank" rel="noopener">adityapandit343 →</a></div></div>
+        <div class="info-row"><div class="lbl">LinkedIn</div><div class="val"><a href="https://www.linkedin.com/in/aditya-dimri-33734427b" target="_blank" rel="noopener">aditya-dimri →</a></div></div>
+        <div class="info-row"><div class="lbl">Upwork</div><div class="val"><a href="https://www.upwork.com/freelancers/~01ea969c19f0c5bf74" target="_blank" rel="noopener">Hire me →</a></div></div>
       </div>
     </div>
   </div>
@@ -344,33 +433,42 @@
 
 <footer>
   <div class="wrap footer-row">
-    <a href="#home" class="logo"><span class="dot"></span>aditya.dimri</a>
+    <a href="#home" class="logo"><span class="dot"></span>ADITYA DIMRI</a>
     <ul class="footer-links">
       <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
+      <li><a href="#projects">Work</a></li>
       <li><a href="#" id="privacyLink">Privacy Policy</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <div class="footer-copy">© 2026 Aditya Dimri. Built with care.</div>
+    <div class="footer-copy">© 2026 ADITYA DIMRI — BUILT WITH CARE</div>
   </div>
 </footer>
 
 <div id="privacyModal">
-  <div class="modal-card glass">
+  <div class="modal-card">
     <button class="modal-close" id="privacyClose">×</button>
     <h2>Privacy Policy</h2>
-    <h4>Information Collection</h4><p>This site collects only what you submit through the contact form: name, email, subject, and message. No analytics or tracking cookies are set by default.</p>
+    <h4>Information Collection</h4><p>This site collects only what you submit through the contact links: your outgoing email or message. No analytics or tracking cookies are set by default.</p>
     <h4>Cookies</h4><p>No cookies are used beyond what your browser stores for basic session state.</p>
-    <h4>Third-Party Services</h4><p>Fonts and 3D libraries are loaded from public CDNs (Google Fonts, cdnjs), which may log standard request metadata.</p>
-    <h4>Security</h4><p>Contact form submissions are not stored server-side in this static build.</p>
+    <h4>Third-Party Services</h4><p>Fonts and animation libraries are loaded from public CDNs (Google Fonts, cdnjs), which may log standard request metadata.</p>
+    <h4>Security</h4><p>No form data is stored server-side in this static build.</p>
     <h4>Your Rights</h4><p>You may request removal of any information you've sent by emailing the address in the Contact section.</p>
     <h4>Contact</h4><p>Questions about this policy can be sent to aditya21766@gmail.com.</p>
   </div>
 </div>
 
 <script>
-  /* loader */
-  window.addEventListener('load', () => { setTimeout(() => { document.getElementById('loader').style.opacity = '0'; document.getElementById('loader').style.visibility = 'hidden'; playHeroIntro(); }, 500); });
+  /* custom cursor */
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+  function cursorLoop(){ rx += (mx-rx)*0.18; ry += (my-ry)*0.18; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(cursorLoop); }
+  cursorLoop();
+  document.querySelectorAll('a, button, .node, .spec-row').forEach(el=>{
+    el.addEventListener('mouseenter', ()=> ring.classList.add('hover'));
+    el.addEventListener('mouseleave', ()=> ring.classList.remove('hover'));
+  });
 
   /* mobile nav */
   document.getElementById('navToggle').addEventListener('click', () => { document.getElementById('navLinks').classList.toggle('open'); });
@@ -381,154 +479,110 @@
   document.getElementById('privacyClose').addEventListener('click', () => { document.getElementById('privacyModal').classList.remove('open'); });
   document.getElementById('privacyModal').addEventListener('click', (e) => { if (e.target.id === 'privacyModal') e.target.classList.remove('open'); });
 
-  /* Resume button */
- document.getElementById('ResumeBtn').addEventListener('click', (e) => {
+  /* resume download */
+  document.getElementById('ResumeBtn').addEventListener('click', (e) => {
     e.preventDefault();
-
     const link = document.createElement('a');
-    link.href = 'Resume.pdf'; // Resume file path
+    link.href = 'Resume.pdf';
     link.download = 'Aditya_Resume.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-});
-
-  /* typed */
-  const roles = ['C# & .NET Core', 'ASP.NET Core APIs', 'Microservices @ scale', 'SQL Server tuning'];
-  let ri = 0, ci = 0, deleting = false;
-  const typedEl = document.getElementById('typed');
-  function typeLoop(){
-    const current = roles[ri];
-    if(!deleting){ ci++; typedEl.textContent = current.slice(0, ci); if(ci === current.length){ deleting = true; setTimeout(typeLoop, 1400); return; } }
-    else { ci--; typedEl.textContent = current.slice(0, ci); if(ci === 0){ deleting = false; ri = (ri+1) % roles.length; } }
-    setTimeout(typeLoop, deleting ? 35 : 65);
-  }
+  });
 
   /* hero intro */
-  function playHeroIntro(){
+  window.addEventListener('load', () => {
     const tl = gsap.timeline({defaults:{ease:'power3.out'}});
-    tl.to('#e1', {opacity:1, y:0, duration:.6}, 0.1).to('#h1', {opacity:1, duration:.8}, 0.25).to('#role', {opacity:1, duration:.5}, 0.55).to('#desc', {opacity:1, duration:.6}, 0.7).to('#ctas', {opacity:1, duration:.6}, 0.85).to('#scrollInd', {opacity:1, duration:.6}, 1.1).to('#heroCanvas', {opacity:1, duration:1.2}, 0.3);
-    typeLoop();
-  }
+    tl.to('#e1', {opacity:1, y:0, duration:.6}, 0.05)
+      .to('#h1', {opacity:1, duration:.8}, 0.15)
+      .to('#desc', {opacity:1, duration:.6}, 0.45)
+      .to('#ctas', {opacity:1, duration:.6}, 0.6)
+      .to('#pulseBox', {opacity:1, duration:.6}, 0.4)
+      .to('#heroStats', {opacity:1, duration:.6}, 0.55);
+  });
 
   /* scroll reveals */
   gsap.registerPlugin(ScrollTrigger);
-  document.querySelectorAll('.reveal').forEach(el => { gsap.to(el, { opacity:1, y:0, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 88%' } }); });
+  document.querySelectorAll('.reveal').forEach(el => {
+    gsap.to(el, { opacity:1, y:0, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 88%' } });
+  });
 
-  /* counters */
-  document.querySelectorAll('.stat .num').forEach(el => { const target = +el.dataset.count; ScrollTrigger.create({ trigger:el, start:'top 90%', once:true, onEnter: () => { let obj = {v:0}; gsap.to(obj, {v:target, duration:1.6, ease:'power2.out', onUpdate:() => el.textContent = Math.floor(obj.v).toLocaleString() }); } }); });
+  /* counters with suffix support */
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = String(target).includes('.');
+    ScrollTrigger.create({
+      trigger: el, start:'top 92%', once:true,
+      onEnter: () => {
+        let obj = {v:0};
+        gsap.to(obj, { v:target, duration:1.5, ease:'power2.out',
+          onUpdate: () => { el.textContent = (isDecimal ? obj.v.toFixed(1) : Math.floor(obj.v).toLocaleString()) + suffix; }
+        });
+      }
+    });
+  });
 
-  /* projects data with images */
+  /* pulse / oscilloscope canvas — heartbeat visual for "systems that stay online" */
+  const pulseCanvas = document.getElementById('pulseCanvas');
+  const pctx = pulseCanvas.getContext('2d');
+  function sizePulse(){
+    const rect = pulseCanvas.getBoundingClientRect();
+    pulseCanvas.width = rect.width * devicePixelRatio;
+    pulseCanvas.height = rect.height * devicePixelRatio;
+    pctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  sizePulse();
+  window.addEventListener('resize', sizePulse);
+  let t = 0;
+  function drawPulse(){
+    requestAnimationFrame(drawPulse);
+    const w = pulseCanvas.clientWidth, h = pulseCanvas.clientHeight;
+    pctx.clearRect(0,0,w,h);
+    pctx.strokeStyle = '#7FB2D6';
+    pctx.lineWidth = 1.4;
+    pctx.beginPath();
+    for(let x=0;x<=w;x++){
+      const px = x/w*4 + t;
+      const spike = Math.pow(Math.max(0, Math.sin(px*Math.PI*2 - 0.3)), 14) * 0.6;
+      const y = h/2 - Math.sin(px*Math.PI*2)*3 - spike*(h*0.7);
+      if(x===0) pctx.moveTo(x,y); else pctx.lineTo(x,y);
+    }
+    pctx.stroke();
+    t += 0.012;
+  }
+  drawPulse();
+
+  /* project data → alternating split panels */
   const projects = [
-    { title: 'Enterprise Bulk SMS Engine', desc: 'Fault-tolerant dispatch platform processing 10,000+ messages per batch with 99.5% delivery success.', tech: ['ASP.NET Core','C#','RabbitMQ','Hangfire','SQL Server'], image: 'Remote-daiffan.png' },
-    { title: 'Smart Hospital Registration Platform',
-     desc: 'Patient intake with biometric capture, camera integration, and thread-safe PDF generation — accelerating workflows by 60%.',
-      tech: ['ASP.NET Core','OpenCVSharp','SQL Server'], image: 'Hospital.png' },
-    { title: 'FinTech ERP — Tally Middleware',
-     desc: 'Middleware mapping live transactional webhooks to Tally ERP ledgers via REST APIs, eliminating manual entry.',
-      tech: ['ASP.NET Core','SQL Server','XML','Web API'], image: 'Tally-integration.png' },
-    { title: 'Multi-Channel Conversational Bot Platform', 
-    desc: 'Chatbot solutions across WhatsApp, MS Teams, and Telegram with webhook-based event handling and secure auth.', 
-    tech: ['ASP.NET Core','WhatsApp API','Teams Bot','Telegram Bot'], 
-    image: 'Bot1.png' },
-    { title: 'Cloud VM SaaS Provisioning Platform',
-     desc: 'SaaS platform for cloud providers to rent VM infrastructure with REST/Web API endpoints for provisioning and subscription.',
-    tech: ['ASP.NET Core','Azure','Docker','SQL Server'],
-    image: 'Cloud.png' }
+    { title:'Enterprise Bulk SMS Engine', desc:'Fault-tolerant dispatch platform processing 10,000+ messages per batch with 99.5% delivery success.', tech:['ASP.NET Core','C#','RabbitMQ','Hangfire','SQL Server'], image:'Remote-daiffan.png' },
+    { title:'Smart Hospital Registration Platform', desc:'Patient intake with biometric capture, camera integration, and thread-safe PDF generation — accelerating workflows by 60%.', tech:['ASP.NET Core','OpenCVSharp','SQL Server'], image:'Hospital.png' },
+    { title:'FinTech ERP — Tally Middleware', desc:'Middleware mapping live transactional webhooks to Tally ERP ledgers via REST APIs, eliminating manual entry.', tech:['ASP.NET Core','SQL Server','XML','Web API'], image:'Tally-integration.png' },
+    { title:'Multi-Channel Conversational Bot Platform', desc:'Chatbot solutions across WhatsApp, MS Teams, and Telegram with webhook-based event handling and secure auth.', tech:['ASP.NET Core','WhatsApp API','Teams Bot','Telegram Bot'], image:'Bot1.png' },
+    { title:'Cloud VM SaaS Provisioning Platform', desc:'SaaS platform for cloud providers to rent VM infrastructure with REST/Web API endpoints for provisioning and subscription.', tech:['ASP.NET Core','Azure','Docker','SQL Server'], image:'Cloud.png' }
   ];
   const grid = document.getElementById('projectGrid');
-  projects.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'glass project-card reveal';
-    card.innerHTML = `
+  projects.forEach((p,i) => {
+    const panel = document.createElement('div');
+    panel.className = 'project-panel reveal' + (i % 2 === 1 ? ' flip' : '');
+    panel.innerHTML = `
       <div class="project-media"><img src="${p.image}" alt="${p.title}" /></div>
-      <div class="project-body">
+      <div class="project-content">
+        <div class="project-index">${String(i+1).padStart(2,'0')} / ${String(projects.length).padStart(2,'0')}</div>
         <h3>${p.title}</h3>
         <p>${p.desc}</p>
         <div class="tech-badges">${p.tech.map(t=>`<span>${t}</span>`).join('')}</div>
-        <div class="project-links"><a href="https://github.com/adityapandit343" target="_blank" rel="noopener">GitHub →</a></div>
+        <div class="project-links"><a href="https://github.com/adityapandit343" target="_blank" rel="noopener">View on GitHub →</a></div>
       </div>`;
-    grid.appendChild(card);
+    grid.appendChild(panel);
   });
-  gsap.utils.toArray('#projectGrid .reveal').forEach(el => { gsap.to(el, { opacity:1, y:0, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%' } }); });
-
-  /* THREE.JS hero */
-  let scene, camera, renderer, group, mouseX = 0, mouseY = 0;
-  function initThree(){
-    const canvas = document.getElementById('heroCanvas');
-    const w = canvas.clientWidth || window.innerWidth * 0.55;
-    const h = canvas.clientHeight || window.innerHeight;
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 100);
-    camera.position.z = 9;
-    renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-    renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    group = new THREE.Group();
-    scene.add(group);
-    const nodeCount = 14;
-    const nodePositions = [];
-    const nodeGeo = new THREE.SphereGeometry(0.06, 16, 16);
-    const blueMat = new THREE.MeshBasicMaterial({color: 0x3b7bff});
-    const purpleMat = new THREE.MeshBasicMaterial({color: 0x9457ff});
-    for(let i=0;i<nodeCount;i++){
-      const phi = Math.acos(-1 + (2*i)/nodeCount);
-      const theta = Math.sqrt(nodeCount * Math.PI) * phi;
-      const r = 3.1;
-      const x = r * Math.cos(theta) * Math.sin(phi);
-      const y = r * Math.sin(theta) * Math.sin(phi);
-      const z = r * Math.cos(phi);
-      const node = new THREE.Mesh(nodeGeo, i % 3 === 0 ? purpleMat : blueMat);
-      node.position.set(x,y,z);
-      group.add(node);
-      nodePositions.push(new THREE.Vector3(x,y,z));
-    }
-    const lineMat = new THREE.LineBasicMaterial({color: 0x3b7bff, transparent:true, opacity:0.22});
-    for(let i=0;i<nodePositions.length;i++){
-      for(let j=i+1;j<nodePositions.length;j++){
-        if(nodePositions[i].distanceTo(nodePositions[j]) < 2.6){
-          const geo = new THREE.BufferGeometry().setFromPoints([nodePositions[i], nodePositions[j]]);
-          group.add(new THREE.Line(geo, lineMat));
-        }
-      }
-    }
-    const shellGeo = new THREE.IcosahedronGeometry(3.6, 1);
-    const shellMat = new THREE.MeshBasicMaterial({color:0x6b8fff, wireframe:true, transparent:true, opacity:0.08});
-    group.add(new THREE.Mesh(shellGeo, shellMat));
-    const particleCount = 200;
-    const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    for(let i=0;i<particleCount;i++){
-      positions[i*3] = (Math.random()-0.5) * 14;
-      positions[i*3+1] = (Math.random()-0.5) * 14;
-      positions[i*3+2] = (Math.random()-0.5) * 14;
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMat = new THREE.PointsMaterial({color:0x9457ff, size:0.03, transparent:true, opacity:0.5});
-    scene.add(new THREE.Points(particleGeo, particleMat));
-    animateThree();
-  }
-  function animateThree(){
-    requestAnimationFrame(animateThree);
-    if(group){
-      group.rotation.y += 0.0022;
-      group.rotation.x += 0.0006;
-      group.rotation.y += (mouseX * 0.3 - group.rotation.y) * 0.01;
-      group.rotation.x += (mouseY * 0.2 - group.rotation.x) * 0.01;
-    }
-    renderer.render(scene, camera);
-  }
-  window.addEventListener('mousemove', (e) => { mouseX = (e.clientX / window.innerWidth - 0.5) * 2; mouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
-  window.addEventListener('resize', () => {
-    if(!renderer) return;
-    const canvas = document.getElementById('heroCanvas');
-    const w = canvas.clientWidth || window.innerWidth * 0.55;
-    const h = canvas.clientHeight || window.innerHeight;
-    camera.aspect = w/h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+  gsap.utils.toArray('#projectGrid .reveal').forEach(el => {
+    gsap.to(el, { opacity:1, y:0, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 88%' } });
   });
-  try{ initThree(); }catch(err){ console.warn('Three.js hero failed to init', err); }
+  document.querySelectorAll('#projectGrid a').forEach(el=>{
+    el.addEventListener('mouseenter', ()=> ring.classList.add('hover'));
+    el.addEventListener('mouseleave', ()=> ring.classList.remove('hover'));
+  });
 </script>
 </body>
 </html>
