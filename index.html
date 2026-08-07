@@ -212,7 +212,9 @@
       <p class="desc" id="desc">Aditya Dimri — 2+ years shipping production microservices in C# and .NET Core. REST APIs, event-driven architecture, and SQL at a scale that has to survive Monday morning traffic.</p>
       <div class="hero-ctas" id="ctas">
         <a href="#projects" class="btn btn-primary">View Projects</a>
-        <a href="Resume.pdf" class="btn btn-ghost" id="resumeBtn">Download Resume</a>
+        <a href="resume.pdf" download="Aditya_Resume.pdf" class="btn btn-ghost" id="resumeBtn">
+    Download Resume
+</a>
         <a href="#contact" class="btn btn-ghost">Contact Me</a>
       </div>
     </div>
@@ -380,7 +382,16 @@
   document.getElementById('privacyModal').addEventListener('click', (e) => { if (e.target.id === 'privacyModal') e.target.classList.remove('open'); });
 
   /* resume button */
-  document.getElementById('resumeBtn').addEventListener('click', (e) => { e.preventDefault(); window.location.href = '#contact'; });
+ document.getElementById('resumeBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const link = document.createElement('a');
+    link.href = 'resume.pdf'; // Resume file path
+    link.download = 'Aditya_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
 
   /* typed */
   const roles = ['C# & .NET Core', 'ASP.NET Core APIs', 'Microservices @ scale', 'SQL Server tuning'];
